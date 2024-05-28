@@ -5,9 +5,6 @@ local function map(mode, lhs, rhs, opts)
 end
 local opts = {noremap = true, silent = true}
 
--- save with ctrl-s
-map('n', '<leader>w', '<cmd>update<CR>', opts)
-
 -- clipboard keybindings
 map('', '<leader>y', '"+y', opts)
 map('', '<leader>yy', '"+yy', opts)
@@ -16,7 +13,7 @@ map('', '<leader>p', '"+p', opts)
 -- lsp keybinding
 map('n', '<leader>,', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>')
 map('n', '<leader>.', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>')
-map('n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>')
+map('n', '<leader>a', '<cmd>lua vim.lsp.buf.code_action()<CR>')
 map('n', '<leader>gd', '<cmd>lua vim.lsp.buf.definition()<CR>')
 map('n', '<leader>fm', '<cmd>lua vim.lsp.buf.formatting()<CR>')
 map('n', '<leader>ho', '<cmd>lua vim.lsp.buf.hover()<CR>')
