@@ -16,6 +16,8 @@ require('lazy').setup({
     'github/copilot.vim',
 
     'effkay/argonaut.vim',
+    'lunarvim/horizon.nvim',
+
 
     'j-hui/fidget.nvim',
 
