@@ -36,3 +36,5 @@ map('n', '<leader>gc', '<cmd>Git commit<CR>')
 map('n', '<leader>gp', '<cmd>Git push<CR>')
 
 map('n', '<leader>m', '<cmd>make<CR>')
+
+map('n', '<leader>c', ':lua require("compile-mode").compile()<CR>', opts)

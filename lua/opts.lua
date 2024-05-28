@@ -1,5 +1,5 @@
 local cmd           = vim.cmd
-local fn            = vim.fn
+--local fn            = vim.fn
 local g             = vim.g
 
 local indent        = 4
@@ -51,5 +51,10 @@ vim.wo.list         = true
 --cmd('colorscheme peachpuff')
 
 if (vim.fn.has('win32')) then
-    vim.opt.shellcmdflag = '-c'
+    vim.opt.shell = 'powershell.exe'
+    vim.opt.shellquote = ''
+    vim.opt.shellxquote = ''
+    vim.opt.shellcmdflag = '-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command '
+    vim.opt.shellpipe    = '| Out-File -Encoding UTF8 %s'
+    vim.opt.shellredir   = '| Out-File -Encoding UTF8 %s'
 end
