@@ -1,6 +1,6 @@
 require('lazy').setup({
     'nvim-lua/plenary.nvim',
-    'wbthomason/packer.nvim',
+    --'wbthomason/packer.nvim',
     --use 'rust-lang/rust.vim'
 
     { 'nvim-telescope/telescope.nvim', tag = '0.1.6' },
@@ -16,7 +16,7 @@ require('lazy').setup({
     'github/copilot.vim',
 
     'effkay/argonaut.vim',
-    'lunarvim/horizon.nvim',
+    --'lunarvim/horizon.nvim',
 
 
     'j-hui/fidget.nvim',
