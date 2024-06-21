@@ -1,12 +1,9 @@
-local api = vim.api
-local fn = vim.fn
-local telescope = require("telescope.builtin")
+--local telescope = require("telescope.builtin")
 
 local M = {}
 
 -- Cache for the last used command
 local last_cmd = nil
-local job_id = nil
 
 function M.compile()
 
@@ -17,7 +14,6 @@ function M.compile()
   else
      cmd = vim.fn.input("Enter command: ", last_cmd)
   end
-
 
   -- If user just pressed Enter, use the cached command
   if cmd == "" then
@@ -31,7 +27,7 @@ function M.compile()
 
   last_cmd = cmd
 
-  vim.api.nvim_exec("!" .. cmd, false)
+  vim.api.nvim_exec(cmd, false)
 
 end
 

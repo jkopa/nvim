@@ -9,6 +9,9 @@ vim.opt.termguicolors = true
 vim.opt.guicursor   = ""
 vim.opt.wrap        = false
 
+vim.o.ignorecase    = true
+vim.o.smartcase     = true
+
 
 vim.o.ruler         = false
 vim.o.wildmode      = 'list:longest'
@@ -39,7 +42,9 @@ g.mapleader         = ' '
 
 cmd('language en_GB.utf-8')
 cmd('set colorcolumn=90')
+
 --vim.g.spell.spelllang = 'en_gb'
+
 vim.o.listchars     = 'tab:|-,nbsp:~,trail:$'
 vim.wo.list         = true
 
