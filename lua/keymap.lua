@@ -32,7 +32,7 @@ map('n', '<leader>gs', '<cmd>Git<CR>')
 map('n', '<leader>gc', '<cmd>Git commit<CR>')
 map('n', '<leader>gp', '<cmd>Git push<CR>')
 
-map('n', '<C-m>', '<cmd>m -2<CR>')
-map('n', '<C-n>', '<cmd>m +1<CR>')
+--map('n', '<C-m>', '<cmd>m -2<CR>')
+--map('n', '<C-n>', '<cmd>m +1<CR>')
 
 map('n', '<leader>c', ':lua require("compile-mode").compile()<CR>', opts)
