@@ -36,3 +36,28 @@ map('n', '<leader>gp', '<cmd>Git push<CR>')
 --map('n', '<C-n>', '<cmd>m +1<CR>')
 
 map('n', '<leader>c', ':lua require("compile-mode").compile()<CR>', opts)
+map('n', '<leader>n', '<CMD>cnext<CR>', opts)
+
+-- Remap hjkl to neio
+--map('n', 'n', 'h', opts)
+--map('n', 'e', 'j', opts)
+--map('n', 'i', 'k', opts)
+--map('n', 'o', 'l', opts)
+
+-- Remap neio back to hjkl
+--map('n', 'h', 'n', opts)
+--map('n', 'j', 'e', opts)
+--map('n', 'k', 'i', opts)
+--map('n', 'l', 'o', opts)
+
+-- Remap hjkl to neio
+--map('v', 'n', 'h', opts)
+--map('v', 'e', 'j', opts)
+--map('v', 'i', 'k', opts)
+--map('v', 'o', 'l', opts)
+
+-- Remap neio back to hjkl
+--map('v', 'h', 'n', opts)
+--map('v', 'j', 'e', opts)
+--map('v', 'k', 'i', opts)
+--map('v', 'l', 'o', opts)

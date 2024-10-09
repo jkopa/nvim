@@ -10,9 +10,9 @@ function M.compile()
   local cmd = nil
 
   if not last_cmd then
-     cmd = vim.fn.input("Enter command: ")
+     cmd = vim.fn.input("Command: ")
   else
-     cmd = vim.fn.input("Enter command: ", last_cmd)
+     cmd = vim.fn.input("Command: ", last_cmd)
   end
 
   -- If user just pressed Enter, use the cached command
