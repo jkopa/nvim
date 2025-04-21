@@ -39,9 +39,6 @@ return { -- Return the plugin list for lazy.nvim
     'mbbill/undotree', -- Configuration in lua/undotree-setup.lua
     'tpope/vim-fugitive', -- Git wrapper (config via keymap.lua)
 
-    -- AI / Copilot
-    'github/copilot.vim',
-
     -- UI / Theme
     { -- Colorscheme - Load first
         'blazkowolf/gruber-darker.nvim',
@@ -114,6 +111,7 @@ return { -- Return the plugin list for lazy.nvim
 
     -- Optional: Icons for completion menu
     { 'onsails/lspkind.nvim' },
+
 
     -- LSP/CMP Configuration Block
     -- This entry configures lspconfig, mason, cmp after they are loaded
@@ -275,5 +273,34 @@ return { -- Return the plugin list for lazy.nvim
             })
         end, -- End of LSP/CMP config function
     }, -- End of LSP/CMP plugin block
+
+    -- AIIIIII
+    {
+        "yetone/avante.nvim",
+        event = "VeryLazy",
+        build = "make", 
+        dependencies = {
+            'nvim-treesitter/nvim-treesitter',
+            'nvim-lua/plenary.nvim',
+            'stevearc/dressing.nvim',
+            'MunifTanjim/nui.nvim',
+            'MeanderingProgrammer/render-markdown.nvim',
+            'hrsh7th/nvim-cmp',
+            'nvim-tree/nvim-web-devicons',
+        },
+        opts = {
+            provider = "gemini", -- Set Gemini as the default provider
+            gemini = {
+                -- As found in search results
+                model = "gemini-2.5-pro-exp-03-25",
+                timeout = 30000, -- Timeout in milliseconds
+                temperature = 0,
+                max_tokens = 8192, -- Max tokens for the response
+            },
+        },
+        config = function(_, opts)
+            require("avante").setup(opts)
+        end
+    },
 
 } -- End of plugin list
