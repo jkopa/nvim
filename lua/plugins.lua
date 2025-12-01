@@ -273,34 +273,4 @@ return { -- Return the plugin list for lazy.nvim
             })
         end, -- End of LSP/CMP config function
     }, -- End of LSP/CMP plugin block
-
-    -- AIIIIII
-    {
-        "yetone/avante.nvim",
-        event = "VeryLazy",
-        build = "make", 
-        dependencies = {
-            'nvim-treesitter/nvim-treesitter',
-            'nvim-lua/plenary.nvim',
-            'stevearc/dressing.nvim',
-            'MunifTanjim/nui.nvim',
-            'MeanderingProgrammer/render-markdown.nvim',
-            'hrsh7th/nvim-cmp',
-            'nvim-tree/nvim-web-devicons',
-        },
-        opts = {
-            provider = "gemini", -- Set Gemini as the default provider
-            gemini = {
-                -- As found in search results
-                model = "gemini-2.5-pro-exp-03-25",
-                timeout = 30000, -- Timeout in milliseconds
-                temperature = 0,
-                max_tokens = 8192, -- Max tokens for the response
-            },
-        },
-        config = function(_, opts)
-            require("avante").setup(opts)
-        end
-    },
-
 } -- End of plugin list
