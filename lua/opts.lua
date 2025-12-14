@@ -3,6 +3,10 @@ local cmd = vim.cmd
 local g = vim.g
 local opt = vim.opt -- Use opt for options
 
+-- [[ Global Variables ]]
+g.mapleader = ' ' -- Set leader key to Space
+g.maplocalleader = '\\' -- Set local leader key
+
 -- [[ Editor Behavior ]]
 opt.termguicolors = true -- Enable true color support
 opt.guicursor = "" -- Use terminal cursor shape
@@ -50,11 +54,10 @@ opt.updatetime = 250 -- Faster completion updates, updates SignatureHelp sooner
 opt.timeoutlen = 300 -- Shorter timeout for key sequences (e.g., leader key)
 opt.ttimeoutlen = 10 -- Time in ms to wait for sequence like <Esc>
 
--- [[ Nvim 0.9+ Recommendation ]]
 opt.cmdheight = 0 -- Hide command line unless needed (messages still appear)
 
--- [[ Windows Specific Shell Settings (Keep if you use Windows) ]]
-if (vim.fn.has('win32')) then
+-- [[ Windows Specific Shell Settings ]]
+if vim.fn.has("win32") == 1 then
     opt.shell = 'powershell.exe'
     opt.shellquote = ''
     opt.shellxquote = ''
@@ -62,7 +65,3 @@ if (vim.fn.has('win32')) then
     opt.shellpipe = '| Out-File -Encoding UTF8 %s'
     opt.shellredir = '| Out-File -Encoding UTF8 %s'
 end
-
--- [[ Global Variables ]]
-g.mapleader = ' ' -- Set leader key to Space
-g.maplocalleader = '\\' -- Set local leader key
