@@ -17,8 +17,9 @@ map("n", "<leader>wj", "<C-w>j", { desc = "Go to lower window" })
 map("n", "<leader>wk", "<C-w>k", { desc = "Go to upper window" })
 map("n", "<leader>wl", "<C-w>l", { desc = "Go to right window" })
 
--- [[ File Explorer ]]
-map("n", "<leader>e", "<cmd>Ex<CR>", { desc = "Open file explorer (Netrw)" })
+-- [[ File Explorer (oil.nvim) ]]
+map("n", "<leader>e", "<cmd>Oil<CR>", { desc = "Open file explorer (Oil)" })
+map("n", "-", "<cmd>Oil<CR>", { desc = "Open parent directory (Oil)" })
 
 -- [[ Telescope ]]
 local builtin = require("telescope.builtin")

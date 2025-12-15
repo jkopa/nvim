@@ -129,6 +129,15 @@ local function parse_ansi(str)
   clean = clean:gsub("\027%[%?[0-9;]*[hl]", "")
   clean = clean:gsub("\027%([AB0-9]", "")
 
+  -- Strip OSC (Operating System Command) sequences
+  -- Format: ESC ] ... BEL  or  ESC ] ... ESC \
+  -- Common OSC sequences: hyperlinks (OSC 8), window title (OSC 0/2), progress (OSC 9)
+  clean = clean:gsub("\027%][^\007\027]*\007", "")      -- OSC terminated by BEL
+  clean = clean:gsub("\027%][^\027]*\027\\", "")        -- OSC terminated by ST (ESC \)
+  clean = clean:gsub("%]8;[^;]*;[^\007]*\007?", "")     -- OSC 8 hyperlinks (sometimes missing ESC)
+  clean = clean:gsub("%]8;;[^\007]*\007?", "")          -- OSC 8 end marker
+  clean = clean:gsub("%]9;[^\007\\]*[\007\\]?", "")
+
   return clean, regions
 end
 
@@ -375,13 +384,32 @@ function M.compile(cmd)
   open_compile_window()
   write_header(cmd, state.compile_dir)
 
-  -- Start the job with PTY for real-time unbuffered output
-  local job_id = vim.fn.jobstart(cmd, {
+  -- Start the job
+  local job_opts = {
     cwd = state.compile_dir,
-    pty = true,
-    on_stdout = on_output,
     on_exit = on_exit,
-  })
+  }
+
+  -- On Windows, PTY mode causes issues with line wrapping and duplicate chars
+  -- Use non-PTY mode with merged stdout/stderr instead
+  if vim.fn.has("win32") == 1 then
+    job_opts.stdout_buffered = false
+    job_opts.stderr_buffered = false
+    job_opts.on_stdout = on_output
+    job_opts.on_stderr = on_output
+    -- Force ANSI color output even without a TTY
+    job_opts.env = {
+      DOTNET_SYSTEM_CONSOLE_ALLOW_ANSI_COLOR_REDIRECTION = "1",
+      FORCE_COLOR = "1",
+      CLICOLOR_FORCE = "1",
+    }
+  else
+    -- On Unix, use PTY for real-time unbuffered output with colors
+    job_opts.pty = true
+    job_opts.on_stdout = on_output
+  end
+
+  local job_id = vim.fn.jobstart(cmd, job_opts)
 
   if job_id <= 0 then
     append_to_buffer({ "Failed to start compilation: " .. cmd })
