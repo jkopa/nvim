@@ -54,7 +54,7 @@ opt.updatetime = 250 -- Faster completion updates, updates SignatureHelp sooner
 opt.timeoutlen = 300 -- Shorter timeout for key sequences (e.g., leader key)
 opt.ttimeoutlen = 10 -- Time in ms to wait for sequence like <Esc>
 
-opt.cmdheight = 0 -- Hide command line unless needed (messages still appear)
+opt.cmdheight = 1 -- Always show command line (prevents flickering)
 
 -- [[ Windows Specific Shell Settings ]]
 if vim.fn.has("win32") == 1 then

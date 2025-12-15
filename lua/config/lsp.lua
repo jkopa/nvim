@@ -21,7 +21,12 @@ vim.diagnostic.config({
 })
 
 -- Mason setup
-require("mason").setup()
+require("mason").setup({
+    registries = {
+        "github:mason-org/mason-registry",
+        "github:Crashdummyy/mason-registry",
+    },
+})
 require("mason-lspconfig").setup({
     ensure_installed = { "lua_ls", "rust_analyzer" },
     handlers = {
@@ -48,3 +53,5 @@ require("mason-lspconfig").setup({
         end,
     },
 })
+
+vim.lsp.config("roslyn", {})

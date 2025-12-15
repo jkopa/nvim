@@ -1,5 +1,11 @@
 -- LSP, completion, and snippets
 return {
+    {
+        "seblyng/roslyn.nvim",
+        ft = { "cs", "razor" },
+        opts = {},
+    },
+    {
     "neovim/nvim-lspconfig",
     dependencies = {
         "williamboman/mason.nvim",
@@ -18,4 +24,5 @@ return {
         require("config.lsp")
         require("config.cmp")
     end,
+    },
 }
