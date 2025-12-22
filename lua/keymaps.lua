@@ -23,7 +23,18 @@ map("n", "-", "<cmd>Oil<CR>", { desc = "Open parent directory (Oil)" })
 
 -- [[ Telescope ]]
 local builtin = require("telescope.builtin")
-map("n", "<leader>pf", builtin.find_files, { desc = "Find files" })
+map("n", "<leader>pf", function()
+    builtin.find_files({
+        layout_strategy = "vertical",
+        layout_config = {
+            width = 0.95,
+            height = 0.95,
+            preview_height = 0.4,
+        },
+        path_display = { "absolute" },
+        dynamic_preview_title = true,
+    })
+end, { desc = "Find files" })
 map("n", "<C-p>", builtin.git_files, { desc = "Git files" })
 map("n", "<leader>pws", function()
     builtin.grep_string({ search = vim.fn.expand("<cword>") })
