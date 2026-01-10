@@ -16,6 +16,8 @@ local state = {
   compile_buf = nil,
   compile_win = nil,
   compile_dir = nil,
+  history = {},        -- List of previous compile commands
+  history_index = 0,   -- Current position when cycling (0 = new input)
 }
 
 -- Buffer name for compilation output
@@ -327,6 +329,125 @@ local function save_all_buffers()
   end
 end
 
+-- Add command to history (avoiding duplicates at the end)
+local function add_to_history(cmd)
+  if cmd and cmd ~= "" then
+    -- Remove if already exists to avoid duplicates
+    for i, v in ipairs(state.history) do
+      if v == cmd then
+        table.remove(state.history, i)
+        break
+      end
+    end
+    table.insert(state.history, cmd)
+  end
+end
+
+-- Custom input with compile command history (async with callback)
+local function input_with_history(prompt, default, callback)
+  local current_input = default or ""
+  local history_pos = 0  -- 0 means editing current input, 1+ means in history
+
+  -- Create a small floating window for input
+  local buf = vim.api.nvim_create_buf(false, true)
+  local width = math.max(60, #prompt + 20)
+  local win = vim.api.nvim_open_win(buf, true, {
+    relative = "editor",
+    row = math.floor(vim.o.lines / 2) - 1,
+    col = math.floor((vim.o.columns - width) / 2),
+    width = width,
+    height = 1,
+    style = "minimal",
+    border = "rounded",
+    title = " " .. prompt .. " ",
+    title_pos = "center",
+  })
+
+  vim.api.nvim_buf_set_lines(buf, 0, -1, false, { current_input })
+  vim.bo[buf].modifiable = true
+  vim.bo[buf].buftype = "nofile"
+
+  -- Position cursor at end of input
+  vim.api.nvim_win_set_cursor(win, { 1, #current_input })
+  vim.cmd("startinsert!")
+
+  local saved_input = current_input  -- Save what user was typing before cycling
+  local closed = false
+
+  local function close_window(result)
+    if closed then return end
+    closed = true
+    if vim.api.nvim_win_is_valid(win) then
+      vim.api.nvim_win_close(win, true)
+    end
+    if vim.api.nvim_buf_is_valid(buf) then
+      vim.api.nvim_buf_delete(buf, { force = true })
+    end
+    vim.cmd("stopinsert")
+    vim.schedule(function()
+      callback(result)
+    end)
+  end
+
+  -- Set up keymaps
+  local opts = { buffer = buf, noremap = true, silent = true }
+
+  -- Submit on Enter
+  vim.keymap.set({ "i", "n" }, "<CR>", function()
+    local result = vim.api.nvim_buf_get_lines(buf, 0, 1, false)[1]
+    close_window(result)
+  end, opts)
+
+  -- Cancel on Escape or Ctrl-C
+  vim.keymap.set({ "i", "n" }, "<Esc>", function()
+    close_window(nil)
+  end, opts)
+  vim.keymap.set("i", "<C-c>", function()
+    close_window(nil)
+  end, opts)
+
+  -- Up arrow - go back in history
+  vim.keymap.set("i", "<Up>", function()
+    if #state.history == 0 then return end
+
+    if history_pos == 0 then
+      -- Save current input before cycling
+      saved_input = vim.api.nvim_buf_get_lines(buf, 0, 1, false)[1]
+    end
+
+    if history_pos < #state.history then
+      history_pos = history_pos + 1
+      local hist_cmd = state.history[#state.history - history_pos + 1]
+      vim.api.nvim_buf_set_lines(buf, 0, -1, false, { hist_cmd })
+      vim.api.nvim_win_set_cursor(win, { 1, #hist_cmd })
+    end
+  end, opts)
+
+  -- Down arrow - go forward in history
+  vim.keymap.set("i", "<Down>", function()
+    if history_pos > 0 then
+      history_pos = history_pos - 1
+      local text
+      if history_pos == 0 then
+        text = saved_input
+      else
+        text = state.history[#state.history - history_pos + 1]
+      end
+      vim.api.nvim_buf_set_lines(buf, 0, -1, false, { text })
+      vim.api.nvim_win_set_cursor(win, { 1, #text })
+    end
+  end, opts)
+
+  -- Handle window being closed externally
+  vim.api.nvim_create_autocmd("WinClosed", {
+    pattern = tostring(win),
+    once = true,
+    callback = function()
+      close_window(nil)
+    end,
+  })
+end
+
 -- Kill the current compilation job
 function M.kill()
   if state.current_job_id then
@@ -339,38 +460,10 @@ function M.kill()
   return false
 end
 
--- Main compile function
-function M.compile(cmd)
-  -- Kill existing job if running
-  if state.current_job_id then
-    local choice = vim.fn.confirm("A compilation is running. Kill it?", "&Yes\n&No", 2)
-    if choice == 1 then
-      M.kill()
-    else
-      return
-    end
-  end
-
-  -- Get command from argument or prompt
-  if not cmd then
-    local prompt = "Compile command"
-    if state.last_cmd then
-      prompt = prompt .. " [" .. state.last_cmd .. "]"
-    end
-    prompt = prompt .. ": "
-
-    cmd = vim.fn.input(prompt, "", "shellcmd")
-    vim.cmd("redraw") -- Clear the command line
-
-    if cmd == "" then
-      if state.last_cmd then
-        cmd = state.last_cmd
-      else
-        vim.notify("No compile command given", vim.log.levels.WARN)
-        return
-      end
-    end
-  end
+-- Internal function to run compilation with a given command
+local function run_compile(cmd)
+  -- Add command to history
+  add_to_history(cmd)
 
   -- Store command and directory
   state.last_cmd = cmd
@@ -418,6 +511,50 @@ function M.compile(cmd)
   end
 
   state.current_job_id = job_id
+end
+
+-- Main compile function
+function M.compile(cmd)
+  -- Kill existing job if running
+  if state.current_job_id then
+    local choice = vim.fn.confirm("A compilation is running. Kill it?", "&Yes\n&No", 2)
+    if choice == 1 then
+      M.kill()
+    else
+      return
+    end
+  end
+
+  -- If command is provided directly, run it
+  if cmd then
+    run_compile(cmd)
+    return
+  end
+
+  -- Otherwise, prompt for command with history support
+  local prompt = "Compile command"
+  if state.last_cmd then
+    prompt = prompt .. " (default: " .. state.last_cmd .. ")"
+  end
+
+  input_with_history(prompt, "", function(input)
+    if input == nil then
+      -- User cancelled
+      return
+    end
+
+    local final_cmd = input
+    if final_cmd == "" then
+      if state.last_cmd then
+        final_cmd = state.last_cmd
+      else
+        vim.notify("No compile command given", vim.log.levels.WARN)
+        return
+      end
+    end
+
+    run_compile(final_cmd)
+  end)
 end
 
 -- Recompile with last command
