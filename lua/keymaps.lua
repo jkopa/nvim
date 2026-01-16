@@ -82,12 +82,15 @@ end, { desc = "Harpoon: Next" })
 -- [[ Undotree ]]
 map("n", "<leader>u", vim.cmd.UndotreeToggle, { desc = "Toggle undotree" })
 
--- [[ Git (Fugitive) ]]
+-- [[ Git (Fugitive + Telescope) ]]
 map("n", "<leader>gs", "<cmd>Git<CR>", { desc = "Git status" })
 map("n", "<leader>gc", "<cmd>Git commit<CR>", { desc = "Git commit" })
 map("n", "<leader>gp", "<cmd>Git push<CR>", { desc = "Git push" })
 map("n", "<leader>gl", "<cmd>Git pull<CR>", { desc = "Git pull" })
 map("n", "<leader>ga", "<cmd>Git add %<CR>", { desc = "Git add current file" })
+map("n", "<leader>gb", builtin.git_branches, { desc = "Git branches (switch)" })
+map("n", "<leader>gw", "<cmd>Telescope git_worktree<CR>", { desc = "Git worktrees (switch)" })
+map("n", "<leader>gW", "<cmd>Telescope git_worktree create_git_worktree<CR>", { desc = "Git worktree create" })
 
 -- [[ LSP ]]
 map("n", "gD", vim.lsp.buf.declaration, { desc = "Go to declaration" })
@@ -130,3 +133,19 @@ map("t", "<Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
 
 -- [[ Help ]]
 map("n", "<leader>?", builtin.keymaps, { desc = "Search keymaps" })
+
+-- [[ DAP (Debugging) ]]
+local dap = require("dap")
+local dapui = require("dapui")
+map("n", "<F5>", dap.continue, { desc = "Debug: Start/Continue" })
+map("n", "<F10>", dap.step_over, { desc = "Debug: Step Over" })
+map("n", "<F11>", dap.step_into, { desc = "Debug: Step Into" })
+map("n", "<F12>", dap.step_out, { desc = "Debug: Step Out" })
+map("n", "<leader>db", dap.toggle_breakpoint, { desc = "Debug: Toggle Breakpoint" })
+map("n", "<leader>dB", function()
+    dap.set_breakpoint(vim.fn.input("Breakpoint condition: "))
+end, { desc = "Debug: Conditional Breakpoint" })
+map("n", "<leader>dr", dap.repl.open, { desc = "Debug: Open REPL" })
+map("n", "<leader>dl", dap.run_last, { desc = "Debug: Run Last" })
+map("n", "<leader>du", dapui.toggle, { desc = "Debug: Toggle UI" })
+map("n", "<leader>dx", dap.terminate, { desc = "Debug: Terminate" })
