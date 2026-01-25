@@ -46,7 +46,7 @@ opt.scrolloff = 8 -- Keep cursor 8 lines away from top/bottom edge
 opt.sidescrolloff = 8 -- Keep cursor 8 columns away from left/right edge
 opt.splitright = true -- Open vertical splits to the right
 opt.splitbelow = true -- Open horizontal splits below
-opt.colorcolumn = "90" -- Show column marker at 90 columns
+opt.colorcolumn = "100" -- Show column marker at 100 columns
 opt.pumheight = 10 -- Max number of items in completion menu
 
 -- [[ Performance / Responsiveness ]]
