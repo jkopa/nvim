@@ -33,6 +33,21 @@ map("n", "<leader>pf", function()
         },
         path_display = { "absolute" },
         dynamic_preview_title = true,
+        find_command = {
+            "rg", "--files", "--hidden", "--no-ignore-vcs",
+            "-g", "!.git",
+            "-g", "!**/bin",
+            "-g", "!**/obj",
+            "-g", "!**/node_modules",
+            "-g", "!**/packages",
+            "-g", "!**/.nuget",
+            "-g", "!**/.vs",
+            "-g", "!**/TestResults",
+            "-g", "!**/artifacts",
+            "-g", "!**/publish",
+            "-g", "!**/*.nupkg",
+            "-g", "!**/*.snupkg",
+        },
     })
 end, { desc = "Find files" })
 map("n", "<C-p>", builtin.git_files, { desc = "Git files" })
