@@ -121,9 +121,42 @@ map("n", "<leader>f", function()
     vim.lsp.buf.format({ async = true })
 end, { desc = "Format buffer" })
 
+-- [[ Completion ]]
+-- Built-in LSP completion (config/lsp.lua). These mirror the old nvim-cmp
+-- bindings; natively the menu is driven by <C-n>/<C-p>/<C-y>.
+map("i", "<C-Space>", function()
+    vim.lsp.completion.get()
+end, { desc = "Trigger LSP completion" })
+
+map({ "i", "s" }, "<Tab>", function()
+    if vim.fn.pumvisible() == 1 then
+        return "<C-n>"
+    elseif vim.snippet.active({ direction = 1 }) then
+        return "<cmd>lua vim.snippet.jump(1)<CR>"
+    end
+    return "<Tab>"
+end, { expr = true, desc = "Next item / jump snippet" })
+
+map({ "i", "s" }, "<S-Tab>", function()
+    if vim.fn.pumvisible() == 1 then
+        return "<C-p>"
+    elseif vim.snippet.active({ direction = -1 }) then
+        return "<cmd>lua vim.snippet.jump(-1)<CR>"
+    end
+    return "<S-Tab>"
+end, { expr = true, desc = "Previous item / jump snippet back" })
+
+map("i", "<CR>", function()
+    return vim.fn.pumvisible() == 1 and "<C-y>" or "<CR>"
+end, { expr = true, desc = "Confirm completion" })
+
 -- [[ Diagnostics ]]
-map("n", "<leader>dp", vim.diagnostic.goto_prev, { desc = "Previous diagnostic" })
-map("n", "<leader>dn", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
+map("n", "<leader>dp", function()
+    vim.diagnostic.jump({ count = -1, float = true })
+end, { desc = "Previous diagnostic" })
+map("n", "<leader>dn", function()
+    vim.diagnostic.jump({ count = 1, float = true })
+end, { desc = "Next diagnostic" })
 map("n", "<leader>de", vim.diagnostic.open_float, { desc = "Show diagnostic" })
 map("n", "<leader>dl", vim.diagnostic.setloclist, { desc = "Diagnostics list" })
 

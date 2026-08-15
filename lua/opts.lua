@@ -48,6 +48,13 @@ opt.splitright = true -- Open vertical splits to the right
 opt.splitbelow = true -- Open horizontal splits below
 opt.colorcolumn = "100" -- Show column marker at 100 columns
 opt.pumheight = 10 -- Max number of items in completion menu
+opt.pummaxwidth = 60 -- Cap completion menu width (0.12)
+opt.winborder = "rounded" -- Default border for floats: hover, signature help, etc. (0.11)
+
+-- [[ Completion ]]
+-- Built-in LSP completion (see config/lsp.lua); "popup" shows the docs preview,
+-- "fuzzy" allows non-prefix matches, "noselect" keeps <CR> from picking blindly.
+opt.completeopt = "menu,menuone,noselect,popup,fuzzy"
 
 -- [[ Performance / Responsiveness ]]
 opt.updatetime = 250 -- Faster completion updates, updates SignatureHelp sooner

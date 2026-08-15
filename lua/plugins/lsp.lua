@@ -1,4 +1,4 @@
--- LSP, completion, and snippets
+-- LSP (completion is built in as of 0.12, see config/lsp.lua)
 return {
     {
         "seblyng/roslyn.nvim",
@@ -51,23 +51,14 @@ return {
         },
     },
     {
-    "neovim/nvim-lspconfig",
-    dependencies = {
-        "williamboman/mason.nvim",
-        "williamboman/mason-lspconfig.nvim",
-        "hrsh7th/nvim-cmp",
-        "hrsh7th/cmp-buffer",
-        "hrsh7th/cmp-path",
-        "hrsh7th/cmp-nvim-lsp",
-        "hrsh7th/cmp-nvim-lua",
-        "saadparwaiz1/cmp_luasnip",
-        "L3MON4D3/LuaSnip",
-        "rafamadriz/friendly-snippets",
-        "onsails/lspkind.nvim",
-    },
-    config = function()
-        require("config.lsp")
-        require("config.cmp")
-    end,
+        "neovim/nvim-lspconfig",
+        dependencies = {
+            -- mason moved from williamboman/ to the mason-org/ organisation
+            "mason-org/mason.nvim",
+            "mason-org/mason-lspconfig.nvim",
+        },
+        config = function()
+            require("config.lsp")
+        end,
     },
 }
